@@ -12,6 +12,9 @@ class Database:
     def search_1(self, table_, var, val):
         return self.db.table(table_).search(self.q[var] == val)
 
+    def search_value_with_id(self, table_, id_, var):
+        return self.db.table(table_).search(self.q["id"] == id_)[0][var]
+
     def search_2(self, table_, var_1, val_1, var_2, val_2):
         return self.db.table(table_).search((self.q[var_1] == val_1) & (self.q[var_2] == val_2))
 

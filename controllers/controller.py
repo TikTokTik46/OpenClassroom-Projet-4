@@ -20,7 +20,7 @@ class Controller:
         for i in range(8):
             new_player = Controller().new_player()
             players.append(new_player.serialize())
-        players = sorted(players, key=lambda d: d["rank"])
+        players = sorted(players, key=lambda d: d["rank"], reverse=True)
         for player in players:
             id_players.append(player["id"])
         tournament = Tournament(input_new_tournament[0], id_players, input_new_tournament[1])
@@ -28,7 +28,8 @@ class Controller:
         round_1 = Controller().first_round_pair(tournament, self.db)
         View().match_result_rules()
         Controller().get_round_result(round_1)
-        pass
+        for round_ in range(tournament.round_number - 1):
+            Controller().next_round_pair(tournament, round_, self.db)
 
 
     def new_player(self):
@@ -47,6 +48,21 @@ class Controller:
             View().display_match_pair(match, db)
             self.db.insert_db(match)
         return first_round
+
+    def next_round_pair(self, tournament, round_number, db):
+        next_round = Round("Round "+str(round_number), tournament.id)
+        self.db.insert_db(next_round)
+        players_scores_and_ranks = []
+        for player in tournament.players:
+            rank = self.db.search_value_with_id("Player", player, "rank")
+            score = self.db.search_value_with_id("Player", player, "score")
+            players_scores_and_ranks.append({"player": player, "rank": rank, "score": score})
+        players_scores_and_ranks = sorted(players_scores_and_ranks, key=lambda d: (d["score"], d["rank"]), reverse=True)
+        print(players_scores_and_ranks)
+        #for i in range(4): #Algorithme pour la création des paires !
+        #    match = Match(tournament.players[i], tournament.players[i + 1], first_round.id, tournament.id)
+        #    View().display_match_pair(match, db)
+        #    self.db.insert_db(match)
 
     def get_round_result(self, round):
         round_matches = self.db.search_1("Match", "round_id", round.id)
