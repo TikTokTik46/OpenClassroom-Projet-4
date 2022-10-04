@@ -1,8 +1,9 @@
 import shortuuid
 
+
 class Player:
     """Modèle représentant un joueur."""
-    __score = 0 #Le double __ permet de protéger la variable en ecriture
+    __score = 0  # Le double __ permet de protéger la variable en ecriture
 
     def __init__(self, name, rank):
         self.name = name

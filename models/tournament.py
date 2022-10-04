@@ -1,3 +1,4 @@
+from models.database import Database
 import shortuuid
 
 class Tournament:
@@ -13,4 +14,12 @@ class Tournament:
     def serialize(self):
         """Used to return a dictionary of the instance attributes"""
         return {'id': self.id, 'tournament_name': self.tournament_name,
-                'players': self.players, 'round_number': self.round_number}
+                'players': ';'.join(self.players), 'round_number': self.round_number}
+
+    def deserialize(self, tournament_serialized):
+        print(tournament_serialized)
+        tournament_deserialized = Tournament(tournament_serialized['tournament_name'],
+                                             tournament_serialized['players'].split(';'),
+                                             tournament_serialized['round_number'])
+        tournament_deserialized.id = tournament_serialized['id']
+        return tournament_deserialized

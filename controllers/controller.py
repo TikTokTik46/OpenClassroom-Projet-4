@@ -28,8 +28,9 @@ class Controller:
         round_1 = Controller().first_round_pair(tournament, self.db)
         View().match_result_rules()
         Controller().get_round_result(round_1)
-        for round_ in range(tournament.round_number - 1):
-            Controller().next_round_pair(tournament, round_, self.db)
+        for round_ in range(tournament.round_number-1):
+            next_round = Controller().next_round_pair(tournament, round_+2, self.db)
+            Controller().get_round_result(next_round)
 
 
     def new_player(self):
@@ -52,17 +53,72 @@ class Controller:
     def next_round_pair(self, tournament, round_number, db):
         next_round = Round("Round "+str(round_number), tournament.id)
         self.db.insert_db(next_round)
-        players_scores_and_ranks = []
+        players_sorted = Controller().sorting_players_by_rank_and_score(tournament)
+        previous_pair = Controller().tournament_previous_pair(tournament)
+        round_pair = Controller().next_round_pair_sorting_algorithm(players_sorted, previous_pair)
+        for round_ in round_pair:
+            match = Match(round_[0], round_[1], next_round.id, tournament.id)
+            View().display_match_pair(match, db)
+            self.db.insert_db(match)
+        return next_round
+
+    def sorting_players_by_rank_and_score(self, tournament):
+        players_sorted = []
         for player in tournament.players:
             rank = self.db.search_value_with_id("Player", player, "rank")
             score = self.db.search_value_with_id("Player", player, "score")
-            players_scores_and_ranks.append({"player": player, "rank": rank, "score": score})
-        players_scores_and_ranks = sorted(players_scores_and_ranks, key=lambda d: (d["score"], d["rank"]), reverse=True)
-        print(players_scores_and_ranks)
-        #for i in range(4): #Algorithme pour la création des paires !
-        #    match = Match(tournament.players[i], tournament.players[i + 1], first_round.id, tournament.id)
-        #    View().display_match_pair(match, db)
-        #    self.db.insert_db(match)
+            players_sorted.append({"player": player, "rank": rank, "score": score, "id": player})
+        players_sorted = sorted(players_sorted, key=lambda d: (d["score"], d["rank"]), reverse=True)
+        return players_sorted
+
+    def next_round_pair_sorting_algorithm(self, players_sorted, previous_pair):
+        pairs_possible = Controller().pairs_possibilities(players_sorted, previous_pair)
+        next_round_pairs = []
+        for i in range(len(pairs_possible)):
+            if len(next_round_pairs) > 0:
+                next_round_pairs.pop()
+            next_round_pairs.append(pairs_possible[i])
+            for j in range(i + 1, len(pairs_possible)):
+                if len(next_round_pairs) > 1:
+                    next_round_pairs.pop()
+                if Controller().check_player_exist(next_round_pairs, pairs_possible[j]):
+                    next_round_pairs.append(pairs_possible[j])
+                    for k in range(j + 1, len(pairs_possible)):
+                        if len(next_round_pairs) > 2:
+                            next_round_pairs.pop()
+                        if Controller().check_player_exist(next_round_pairs, pairs_possible[k]):
+                            next_round_pairs.append(pairs_possible[k])
+                            for m in range(k + 1, len(pairs_possible)):
+                                if len(next_round_pairs) > 3:
+                                    next_round_pairs.pop()
+                                if Controller().check_player_exist(next_round_pairs, pairs_possible[m]):
+                                    next_round_pairs.append(pairs_possible[m])
+                                    return next_round_pairs
+        return print("Pas de paires possible")
+
+    def check_player_exist(self, list_matchs, match):
+        for list_match in list_matchs:
+            if match[0] == list_match[0] or match[0] == list_match[1] or match[1] == list_match[0] or match[1] == list_match[1]:
+                return False
+        return True
+
+    def pairs_possibilities(self,players_sorted, previous_pair):
+        pairs_possible = []
+        for player_one in range(len(players_sorted)):
+            for player_two in range(player_one+1, len(players_sorted)):
+                if [players_sorted[player_one]["id"], players_sorted[player_two]["id"]] not in previous_pair:
+                    pair_total_score = players_sorted[player_one]["score"] + players_sorted[player_one]["score"]
+                    pairs_possible.append([players_sorted[player_one]["id"], players_sorted[player_two]["id"], pair_total_score])
+        pairs_possible.sort(key=lambda d: (d[2]), reverse=True)
+        return pairs_possible
+
+    def tournament_previous_pair(self, tournament):
+        previous_matches = self.db.search_1("Match", "tournament_id", tournament.id)
+        previous_pair = []
+        for previous_match in previous_matches:
+            match_players = [previous_match["player_one"], previous_match["player_two"]]
+            previous_pair.append(match_players)
+        return previous_pair
 
     def get_round_result(self, round):
         round_matches = self.db.search_1("Match", "round_id", round.id)

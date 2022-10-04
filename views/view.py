@@ -1,4 +1,3 @@
-from models.database import Database
 
 class View:
     """Gestion de l'interface utilisateur"""
