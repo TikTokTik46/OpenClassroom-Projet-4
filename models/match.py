@@ -9,7 +9,7 @@ class Match:
         self.player_one = player_one
         self.player_two = player_two
         self.round_id = round_id
-        self.result = 0
+        self.result = -1
         self.tournament_id = tournament_id
         self.id = "M_" + shortuuid.uuid()
 

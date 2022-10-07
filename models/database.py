@@ -1,9 +1,10 @@
 from tinydb import TinyDB, Query
 
+
 class Database:
 
     def __init__(self, db_name):
-        self.db = TinyDB(str(db_name)+'.json')
+        self.db = TinyDB(str(db_name) + '.json')
         self.q = Query()
 
     def clean_db(self, table_):
