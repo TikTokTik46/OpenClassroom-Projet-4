@@ -2,13 +2,15 @@ import shortuuid
 
 
 class Round:
-    """Modèle représentant un tour d'un match."""
+    """Model representing a round of a match"""
 
     def __init__(self, round_name, tournament_id):
-        """Initialise les détails relatifs à un tour"""
+        """Initialize attributes related to a round"""
         self.round_name = round_name
         self.tournament_id = tournament_id
         self.id = "R_" + shortuuid.uuid()
 
     def serialize(self):
-        return {"id": self.id, "round_name": self.round_name, "tournament_id": self.tournament_id}
+        """Transform a round object in a dictionary"""
+        return {"id": self.id, "round_name": self.round_name,
+                "tournament_id": self.tournament_id}

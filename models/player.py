@@ -2,21 +2,21 @@ import shortuuid
 
 
 class Player:
-    """Modèle représentant un joueur."""
+    """Model representing a match"""
 
-    def __init__(self, name, rank):
-        self.name = name
+    def __init__(self, first_name, last_name, birth_date, gender, rank):
+        """Initialize attributes related to a player"""
+        self.first_name = first_name
+        self.last_name = last_name
+        self.name = first_name + " " + last_name
+        self.birth_date = birth_date
+        self.gender = gender
         self.rank = rank
         self.id = "P_" + shortuuid.uuid()
 
-    def __str__(self):
-        """Used in print."""
-        return f"Joueur {self.name}, ID du joueur {self.id}, rang {self.rank}"
-
-    def __repr__(self):
-        """Used in print."""
-        return str(self)
-
     def serialize(self):
-        """Used to return a dictionary of the instance attributes"""
-        return {'id': self.id, 'name': self.name, 'rank': self.rank}
+        """Transform a player object in a dictionary"""
+        return {'id': self.id, 'first_name': self.first_name,
+                'last_name': self.last_name, 'name': self.name,
+                'birth_date': self.birth_date, 'gender': self.gender,
+                'rank': self.rank}
