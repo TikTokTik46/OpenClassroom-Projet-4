@@ -9,5 +9,7 @@ Lancer l'executable python main.py via un interpréteur Python.
 Choisir l'action souhaitée en tappant le chiffre correspondant puis en appuyant sur entré.
 
 Génération des rapports Flake8 :
-Ouvrer le terminal de commande
-flake8 --format=html --htmldir=flake-report
+Ouvrer le terminal de commande et entrer les commande suivante en etant dans le dossier contenant le fichier main.py
+flake8 controllers --format=html --htmldir=flake-report
+flake8 views --format=html --htmldir=flake-report
+flake8 models --format=html --htmldir=flake-report
