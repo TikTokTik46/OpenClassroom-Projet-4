@@ -10,8 +10,10 @@ Projet n°4 : Création d'un programme console Python pour la gestion de tournoi
 
 
 <u>Lancement et utilisation du programme</u> :
-<br/>Lancer l'executable python main.py via un interpréteur Python.
+<br/>Pour pouvoir partir d'une base de donnée vierge supprimer le fichier data_base.json (ce fichier est un exemple de base de donnée)
+<br/>Lancer l'executable python Gestionnaire_de_Tournois.py via un interpréteur Python.
 <br/>Choisir l'action souhaitée du menu principale en tappant le chiffre correspondant puis en appuyant sur entrée. Suivre les indications dans le terminal pour utiliser le programme.
+
 
 <u>Génération des rapports Flake8</u> :
 <br/>Ouvrir le terminal de commande et entrer les commande suivante en etant dans le dossier contenant le fichier Gestionnaire_de_Tournois.py
