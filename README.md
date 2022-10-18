@@ -14,7 +14,7 @@ Projet n°4 : Création d'un programme console Python pour la gestion de tournoi
 <br/>Choisir l'action souhaitée du menu principale en tappant le chiffre correspondant puis en appuyant sur entrée. Suivre les indications dans le terminal pour utiliser le programme.
 
 <u>Génération des rapports Flake8</u> :
-<br/>Ouvrir le terminal de commande et entrer les commande suivante en etant dans le dossier contenant le fichier main.py
+<br/>Ouvrir le terminal de commande et entrer les commande suivante en etant dans le dossier contenant le fichier Gestionnaire_de_Tournois.py
 <br/> - flake8 controllers --format=html --htmldir=flake-report --max-line-length 119
 <br/> - flake8 views --format=html --htmldir=flake-report --max-line-length 119
 <br/> - flake8 models --format=html --htmldir=flake-report --max-line-length 119
