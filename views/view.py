@@ -215,15 +215,12 @@ class View:
         print("\n|Liste des tournois dans la base de donnée|\n")
         for tournament in tournaments:
             print("Nom : " + tournament["tournament_name"].ljust(25, ' ') +
-                  " | Lieu : "
-                  + tournament["tournament_place"].ljust(15, ' ') +
+                  " | Lieu : " + tournament["tournament_place"].ljust(15, ' ') +
                   " | Date : " + tournament["tournament_date"].ljust(15, ' ') +
-                  " | Contrôle du temps : "
-                  + tournament["time_control"].ljust(15, ' ') +
+                  " | Contrôle du temps : " + tournament["time_control"].ljust(15, ' ') +
                   " | Status : " + tournament["status"].ljust(15, ' ') +
                   " | ID : " + tournament["id"] +
-                  "\nDescription : "
-                  + tournament["description"] + "\n")
+                  "\nDescription : " + tournament["description"] + "\n")
 
     @staticmethod
     def rounds_report(rounds, tournament_name):
@@ -238,12 +235,9 @@ class View:
         """Display the report of matchs of a tournament in the database"""
         print(f"\n|Liste des matchs du tournois -> {tournament_name}|")
         for match in matchs:
-            player_one_name = \
-                db.search("Player", "id", match["player_one"])[0]["name"]
-            player_two_name = \
-                db.search("Player", "id", match["player_two"])[0]["name"]
-            round_name = \
-                db.search("Round", "id", match["round_id"])[0]["round_name"]
+            player_one_name = db.search("Player", "id", match["player_one"])[0]["name"]
+            player_two_name = db.search("Player", "id", match["player_two"])[0]["name"]
+            round_name = db.search("Round", "id", match["round_id"])[0]["round_name"]
             result_sentence = ""
             if match["result"] == 0:
                 result_sentence = "Egalitée"
@@ -266,6 +260,5 @@ class View:
         for k, v in sorted(tournament.players_and_scores.items(),
                            key=lambda x: x[1], reverse=True):
             player_name = db.search("Player", "id", k)[0]["name"]
-            print(str(ranking) + f" - {player_name}".ljust(20, ' ') +
-                  f" | Score final : {v}")
+            print(str(ranking) + f" - {player_name}".ljust(20, ' ') + f" | Score final : {v}")
             ranking += 1

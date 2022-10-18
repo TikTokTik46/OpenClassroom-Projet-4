@@ -61,8 +61,7 @@ class Controller:
         tournaments = self.db.info_table("Tournament")
         players_info = self.db.info_table("Player")
         tournament = View().tournament_selection(tournaments)
-        tournaments_deserialized = Controller().deserialize_tournament(
-            tournament)
+        tournaments_deserialized = Controller().deserialize_tournament(tournament)
         players_id = list(tournaments_deserialized.players_and_scores.keys())
         tournament_players_info = []
         for player_info in players_info:
@@ -81,8 +80,7 @@ class Controller:
         """Launch rounds of a tournament report then return to the main menu"""
         tournaments = self.db.info_table("Tournament")
         tournament = View().tournament_selection(tournaments)
-        tournament_rounds = self.db.search("Round", "tournament_id",
-                                           tournament["id"])
+        tournament_rounds = self.db.search("Round", "tournament_id", tournament["id"])
         View().rounds_report(tournament_rounds, tournament["tournament_name"])
         Controller().main_menu()
 
@@ -90,10 +88,8 @@ class Controller:
         """Launch matchs of a tournament report then return to the main menu"""
         tournaments = self.db.info_table("Tournament")
         tournament = View().tournament_selection(tournaments)
-        tournament_matchs = self.db.search("Match", "tournament_id",
-                                           tournament["id"])
-        View().matchs_report(tournament_matchs, tournament["tournament_name"],
-                             self.db)
+        tournament_matchs = self.db.search("Match", "tournament_id", tournament["id"])
+        View().matchs_report(tournament_matchs, tournament["tournament_name"], self.db)
         Controller().main_menu()
 
     @staticmethod
@@ -113,10 +109,8 @@ class Controller:
     def new_tournament(self):
         """Create a new tournament"""
         players_info = self.db.info_table("Player")
-        players_info_sorted_by_name = \
-            sorted(players_info, key=lambda d: (d["name"]))
-        input_new_tournament = \
-            View().new_tournament(players_info_sorted_by_name)
+        players_info_sorted_by_name = sorted(players_info, key=lambda d: (d["name"]))
+        input_new_tournament = View().new_tournament(players_info_sorted_by_name)
         tournament = Tournament(input_new_tournament[0],
                                 input_new_tournament[2],
                                 input_new_tournament[3],
@@ -133,21 +127,18 @@ class Controller:
         tournaments_info_db = self.db.info_table("Tournament")
         selected_tournament = View().reload_tournament(tournaments_info_db)
         if selected_tournament is not False:
-            tournament = \
-                Controller().deserialize_tournament(selected_tournament)
+            tournament = Controller().deserialize_tournament(selected_tournament)
             Controller().launch_tournament(tournament)
         Controller().main_menu()
 
     def launch_tournament(self, tournament):
         """Launch a tournament"""
-        round_done = \
-            len(self.db.search("Round", "tournament_id", tournament.id))
+        round_done = len(self.db.search("Round", "tournament_id", tournament.id))
         if round_done == 0:
             Controller().first_round(tournament, self.db)
             round_done = 1
         for round_ in range(tournament.round_number - round_done):
-            Controller().next_round(tournament,
-                                    round_ + round_done + 1, self.db)
+            Controller().next_round(tournament, round_ + round_done + 1, self.db)
         Controller().tournament_closing(tournament)
 
     def tournament_closing(self, tournament: Tournament):
@@ -158,8 +149,7 @@ class Controller:
     def new_player(self):
         """Create a new player"""
         player_info = View().new_player()
-        player = Player(player_info[0], player_info[1], player_info[2],
-                        player_info[3], player_info[4])
+        player = Player(player_info[0], player_info[1], player_info[2], player_info[3], player_info[4])
         self.db.insert_db(player)
         Controller().main_menu()
         pass
@@ -169,8 +159,7 @@ class Controller:
         first_round = Round("Round 1", tournament.id)
         View().new_round_info(first_round, tournament)
         round_matches = []
-        players_sorted = Controller().sorting_players_by_rank_and_score(
-            tournament)
+        players_sorted = Controller().sorting_players_by_rank_and_score(tournament)
         for i in range(4):
             match = Match(players_sorted[i]["id"], players_sorted[i + 4]["id"],
                           first_round.id, tournament.id)
@@ -181,21 +170,16 @@ class Controller:
             self.db.insert_db(match)
         self.db.insert_db(first_round)
         self.db.modify_db("Tournament", "id", tournament.id, "scores",
-                          ";".join(str(score) for score in
-                                   list(tournament.players_and_scores.values())
-                                   )
-                          )
+                          ";".join(str(score) for score in list(tournament.players_and_scores.values())))
         return first_round
 
     def next_round(self, tournament, round_number, db):
         """Create the next pair of a tournament"""
         next_round = Round("Round " + str(round_number), tournament.id)
         View().new_round_info(next_round, tournament)
-        players_sorted = Controller().sorting_players_by_rank_and_score(
-            tournament)
+        players_sorted = Controller().sorting_players_by_rank_and_score(tournament)
         previous_pair = Controller().tournament_previous_pair(tournament)
-        round_pair = Controller().next_round_pair_sorting_algorithm(
-            players_sorted, previous_pair)
+        round_pair = Controller().next_round_pair_sorting_algorithm(players_sorted, previous_pair)
         round_matches = []
         for round_ in round_pair:
             match = Match(round_[0], round_[1], next_round.id, tournament.id)
@@ -206,10 +190,7 @@ class Controller:
             self.db.insert_db(match)
         self.db.insert_db(next_round)
         self.db.modify_db("Tournament", "id", tournament.id, "scores",
-                          ";".join(str(score) for score in
-                                   list(tournament.players_and_scores.values())
-                                   )
-                          )
+                          ";".join(str(score) for score in list(tournament.players_and_scores.values())))
         return next_round
 
     @staticmethod
@@ -229,9 +210,7 @@ class Controller:
             score = tournament.players_and_scores[player_id]
             players_unsorted.append(
                 {"id": player_id, "rank": rank, "score": score})
-        players_sorted = \
-            sorted(players_unsorted, key=lambda d: (d["score"], d["rank"]),
-                   reverse=True)
+        players_sorted = sorted(players_unsorted, key=lambda d: (d["score"], d["rank"]), reverse=True)
         return players_sorted
 
     @staticmethod
@@ -249,20 +228,17 @@ class Controller:
             for j in range(i + 1, len(pairs_possible)):
                 if len(next_round_pairs) > 1:
                     next_round_pairs.pop()
-                if Controller().check_player_exist(next_round_pairs,
-                                                   pairs_possible[j]):
+                if Controller().check_player_exist(next_round_pairs, pairs_possible[j]):
                     next_round_pairs.append(pairs_possible[j])
                     for k in range(j + 1, len(pairs_possible)):
                         if len(next_round_pairs) > 2:
                             next_round_pairs.pop()
-                        if Controller().check_player_exist(next_round_pairs,
-                                                           pairs_possible[k]):
+                        if Controller().check_player_exist(next_round_pairs, pairs_possible[k]):
                             next_round_pairs.append(pairs_possible[k])
                             for m in range(k + 1, len(pairs_possible)):
                                 if len(next_round_pairs) > 3:
                                     next_round_pairs.pop()
-                                if Controller().check_player_exist(
-                                        next_round_pairs, pairs_possible[m]):
+                                if Controller().check_player_exist(next_round_pairs, pairs_possible[m]):
                                     next_round_pairs.append(pairs_possible[m])
                                     return next_round_pairs
         return print("Pas de paires possible")
@@ -273,8 +249,7 @@ class Controller:
         it's the case"""
         for list_match in list_matchs:
             if match[0] == list_match[0] or match[0] == list_match[1] or \
-                    match[1] == list_match[0] or match[1] == \
-                    list_match[1]:
+                    match[1] == list_match[0] or match[1] == list_match[1]:
                 return False
         return True
 
@@ -285,25 +260,19 @@ class Controller:
         pairs_possible = []
         for player_one in range(len(players_sorted)):
             for player_two in range(player_one + 1, len(players_sorted)):
-                if [players_sorted[player_one]["id"],
-                    players_sorted[player_two]["id"]] \
-                        not in previous_pair:
-                    pair_total_score = players_sorted[player_one]["score"] + \
-                                       players_sorted[player_two]["score"]
-                    pairs_possible.append([players_sorted[player_one]["id"],
-                                           players_sorted[player_two]["id"],
+                if [players_sorted[player_one]["id"], players_sorted[player_two]["id"]] not in previous_pair:
+                    pair_total_score = players_sorted[player_one]["score"] + players_sorted[player_two]["score"]
+                    pairs_possible.append([players_sorted[player_one]["id"], players_sorted[player_two]["id"],
                                            pair_total_score])
         pairs_possible.sort(key=lambda d: (d[2]), reverse=True)
         return pairs_possible
 
     def tournament_previous_pair(self, tournament):
         """Give a list of all the previous pairs of a tournament"""
-        previous_matches = self.db.search("Match", "tournament_id",
-                                          tournament.id)
+        previous_matches = self.db.search("Match", "tournament_id", tournament.id)
         previous_pair = []
         for previous_match in previous_matches:
-            match_players = [previous_match["player_one"],
-                             previous_match["player_two"]]
+            match_players = [previous_match["player_one"], previous_match["player_two"]]
             previous_pair.append(match_players)
         return previous_pair
 
@@ -318,11 +287,9 @@ class Controller:
         winners = winner_codex[match.result]
         for winner in winners:
             player_db = self.db.search("Player", "id", winner["winner_id"])[0]
-            tournament.players_and_scores[winner["winner_id"]] += \
-                winner["score"]
+            tournament.players_and_scores[winner["winner_id"]] += winner["score"]
             View().winner_score(player_db["name"], winner["score"],
-                                tournament.players_and_scores.get(
-                                    winner["winner_id"]))
+                                tournament.players_and_scores.get(winner["winner_id"]))
         return winners
 
     @staticmethod
@@ -330,8 +297,7 @@ class Controller:
         """Transform a dictionary of a tournament serialized
         in a tournament object"""
         players = tournament_serialized['players'].split(";")
-        scores = list(map(lambda score: float(score),
-                          tournament_serialized['scores'].split(";")))
+        scores = list(map(lambda score: float(score), tournament_serialized['scores'].split(";")))
         players_and_scores = {}
         for i in range(len(players)):
             players_and_scores[players[i]] = scores[i]

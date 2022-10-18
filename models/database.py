@@ -20,8 +20,7 @@ class Database:
 
     def modify_db(self, table_, var, val: str, var_to_modify, new_val):
         """Modifies a variable of an object saved in the database"""
-        self.db.table(table_).update({var_to_modify: new_val},
-                                     Query()[var] == val)
+        self.db.table(table_).update({var_to_modify: new_val}, Query()[var] == val)
 
     def info_table(self, table_):
         """Return all the data saved in a table"""
