@@ -7,7 +7,7 @@ from models.database import Database
 
 
 class Controller:
-    """Controller model"""
+    """Controller"""
 
     def __init__(self):
         """Initialize attributes related to the controller"""

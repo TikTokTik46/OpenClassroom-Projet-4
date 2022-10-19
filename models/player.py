@@ -2,7 +2,7 @@ import shortuuid
 
 
 class Player:
-    """Model representing a match"""
+    """Model representing a player"""
 
     def __init__(self, first_name, last_name, birth_date, gender, rank):
         """Initialize attributes related to a player"""

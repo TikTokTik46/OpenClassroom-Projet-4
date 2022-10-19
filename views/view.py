@@ -1,5 +1,5 @@
 class View:
-    """User interface management model"""
+    """User interface management"""
 
     @staticmethod
     def welcome_interface():
@@ -56,12 +56,11 @@ class View:
                                       "en entrant leur numéro suivi d'un"
                                       " point virgule :").split(";")
         for player_chosen in players_selection:
-            players_and_scores[players_info[int(player_chosen) - 1]["id"]] =\
-                0.0
+            players_and_scores[players_info[int(player_chosen) - 1]["id"]] = 0.0
         print("Voulez vous lancer le tournois maintenant ?")
         print("Oui (o) ou Non (n) ?")
-        return tournament_name, round_number, players_and_scores,\
-            tournament_place, tournament_date, time_control, description
+        return tournament_name, round_number, players_and_scores, tournament_place, tournament_date, time_control,\
+            description
 
     @staticmethod
     def time_control():
@@ -257,8 +256,7 @@ class View:
         print(f"\n|Fin du Tournois - {tournament.tournament_name} - |")
         print("\n|Résultats du tournois|\n")
         ranking = 1
-        for k, v in sorted(tournament.players_and_scores.items(),
-                           key=lambda x: x[1], reverse=True):
+        for k, v in sorted(tournament.players_and_scores.items(), key=lambda x: x[1], reverse=True):
             player_name = db.search("Player", "id", k)[0]["name"]
             print(str(ranking) + f" - {player_name}".ljust(20, ' ') + f" | Score final : {v}")
             ranking += 1
