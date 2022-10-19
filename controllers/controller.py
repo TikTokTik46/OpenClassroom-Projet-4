@@ -116,7 +116,8 @@ class Controller:
                                 input_new_tournament[3],
                                 input_new_tournament[4],
                                 input_new_tournament[5],
-                                input_new_tournament[6])
+                                input_new_tournament[6],
+                                input_new_tournament[1])
         self.db.insert_db(tournament)
         if View().run_tournament(tournament):
             Controller().launch_tournament(tournament)
